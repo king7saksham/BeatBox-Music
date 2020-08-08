@@ -244,7 +244,7 @@ public class BeatBox {
         boolean[] checkBoxState = null;
 
         try {
-            FileInputStream fileInputStream = new FileInputStream("CheckBox.ser");
+            FileInputStream fileInputStream = new FileInputStream(file);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             checkBoxState = (boolean []) (objectInputStream.readObject());
         }catch (Exception ex){
