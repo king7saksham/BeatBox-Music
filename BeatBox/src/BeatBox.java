@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
 
 public class BeatBox {
@@ -31,20 +32,35 @@ public class BeatBox {
         Box buttonBox = new Box(BoxLayout.Y_AXIS);
 
         JButton start = new JButton("Start");
-        start.addActionListener(new MyStartListner());
+        start.addActionListener(new MyStartListener());
         buttonBox.add(start);
 
         JButton stop = new JButton("Stop");
-        stop.addActionListener(new MyStopListner());
+        stop.addActionListener(new MyStopListener());
         buttonBox.add(stop);
 
         JButton upTempo = new JButton("Tempo Up");
-        upTempo.addActionListener(new MyUpTempoListner());
+        upTempo.addActionListener(new MyUpTempoListener());
         buttonBox.add(upTempo);
 
         JButton downTempo = new JButton("Tempo Down");
-        downTempo.addActionListener(new MyDownTempoListner());
+        downTempo.addActionListener(new MyDownTempoListener());
         buttonBox.add(downTempo);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("File");
+        JMenuItem saveMenuItem = new JMenuItem("Save");
+        JMenuItem loadMenuItem = new JMenuItem("Load");
+        JMenuItem clearMenuItem = new JMenuItem("Clear");
+
+        saveMenuItem.addActionListener(new MySaveListener());
+        loadMenuItem.addActionListener(new MyLoadListener());
+        clearMenuItem.addActionListener(new MyClearListener());
+
+        menu.add(saveMenuItem);
+        menu.add(loadMenuItem);
+        menu.add(clearMenuItem);
+        menuBar.add(menu);
 
         Box nameBox = new Box(BoxLayout.Y_AXIS);
         for (int i=0;i<16;i++){
@@ -71,6 +87,7 @@ public class BeatBox {
 
         setUpMIDI();
 
+        theFrame.setJMenuBar(menuBar);
         theFrame.setBounds(50,50,300,300);
         theFrame.pack();
         theFrame.setVisible(true);
@@ -121,20 +138,20 @@ public class BeatBox {
         }catch (Exception e){e.printStackTrace();}
     }
 
-    public class MyStartListner implements ActionListener {
+    public class MyStartListener implements ActionListener {
         public void actionPerformed(ActionEvent a){
             buildTrackAndStart();
         }
     }
 
-    public class MyStopListner implements ActionListener {
+    public class MyStopListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent a) {
             sequencer.stop();
         }
     }
 
-    public class MyUpTempoListner implements ActionListener {
+    public class MyUpTempoListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent a) {
             float tempoFactor = sequencer.getTempoFactor();
@@ -142,7 +159,7 @@ public class BeatBox {
         }
     }
 
-    public class MyDownTempoListner implements ActionListener{
+    public class MyDownTempoListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent a) {
             float tempoFactor = sequencer.getTempoFactor();
@@ -170,5 +187,76 @@ public class BeatBox {
         }catch (Exception ex){ex.printStackTrace();}
 
         return event;
+    }
+
+    public class MyClearListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            for(int i=0;i<256;i++){
+                JCheckBox jCheckBox = (JCheckBox) (checkBoxList.get(i));
+                jCheckBox.setSelected(false);
+            }
+        }
+    }
+
+    public class MySaveListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileSave = new JFileChooser();
+            fileSave.showSaveDialog(theFrame);
+            saveFile(fileSave.getSelectedFile());
+        }
+    }
+
+    public class MyLoadListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileOpen = new JFileChooser();
+            fileOpen.showOpenDialog(theFrame);
+            loadFile(fileOpen.getSelectedFile());
+        }
+    }
+
+    public void saveFile(File file){
+        boolean[] checkBoxState = new boolean[256];
+
+        for (int i=0;i<256;i++) {
+            JCheckBox checkBox = (JCheckBox) (checkBoxList.get(i));
+
+            if (checkBox.isSelected()) {
+                checkBoxState[i] = true;
+            } else {
+                checkBoxState[i] = false;
+            }
+        }
+
+        try {
+            FileOutputStream fileStream = new FileOutputStream(file);
+            ObjectOutputStream outputStream = new ObjectOutputStream(fileStream);
+            outputStream.writeObject(checkBoxState);
+            outputStream.close();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    public void loadFile(File file){
+        boolean[] checkBoxState = null;
+
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            checkBoxState = (boolean []) (objectInputStream.readObject());
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        for (int i=0;i<256;i++){
+            JCheckBox jc = (JCheckBox) (checkBoxList.get(i));
+
+            jc.setSelected(checkBoxState[i]);
+        }
+
+        sequencer.stop();
     }
 }
