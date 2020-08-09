@@ -196,6 +196,7 @@ public class BeatBox {
                 JCheckBox jCheckBox = (JCheckBox) (checkBoxList.get(i));
                 jCheckBox.setSelected(false);
             }
+            sequencer.stop();
         }
     }
 
