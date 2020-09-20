@@ -30,7 +30,6 @@ public class BeatBox {
 
     Sequencer sequencer;
     Sequence sequence;
-    Sequence mySequence = null;
     Track track;
 
     String[] instrumentName = {"Bass Drum", "Closed Hi-Hat", "Open Hi-Hat", "Acoustic Snare", "Crash Cymbal", "Hand Clap", "High Clap", "Hi Bongo", "Marcas", "Whistle", "Low Conga", "Cowbell", "Vibraslap", "Low-Mid Tom", "High Agogo", "Open Hi Conga"};
@@ -42,7 +41,7 @@ public class BeatBox {
 
     public void startUp(){
         try {
-            Socket sock = new Socket("fe80::719d:9a2:2ce:a683%10", 2002);
+            Socket sock = new Socket("182.68.190.48", 8080);
             out = new ObjectOutputStream(sock.getOutputStream());
             in = new ObjectInputStream(sock.getInputStream());
             Thread remote = new Thread(new RemoteReader());
@@ -72,7 +71,6 @@ public class BeatBox {
                 null,
                 option,
                 option[0]);
-
         userName = textField.getText();
     }
     public void buildGUI(){
@@ -81,7 +79,7 @@ public class BeatBox {
         JPanel background = new JPanel(layout);
         background.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
-        checkBoxList = new ArrayList<JCheckBox>();
+        checkBoxList = new ArrayList<>();
         Box buttonBox = new Box(BoxLayout.Y_AXIS);
 
         JButton start = new JButton("Start");
@@ -100,12 +98,16 @@ public class BeatBox {
         downTempo.addActionListener(new MyDownTempoListener());
         buttonBox.add(downTempo);
 
-        JButton send = new JButton("Send");
-        send.addActionListener(new MySendListener());
-        buttonBox.add(send);
+        JButton random = new JButton("Generate Random");
+        random.addActionListener(new MyRandomListener());
+        buttonBox.add(random);
 
         userMessage = new JTextField();
         buttonBox.add(userMessage);
+
+        JButton send = new JButton("Send");
+        send.addActionListener(new MySendListener());
+        buttonBox.add(send);
 
         incomingList = new JList();
         incomingList.addListSelectionListener(new MyListSelectionListener());
@@ -177,7 +179,7 @@ public class BeatBox {
     }
 
     public void buildTrackAndStart(){
-        int[] trackList = null;
+        int[] trackList;
 
         sequence.deleteTrack(track);
         track = sequence.createTrack();
@@ -188,7 +190,7 @@ public class BeatBox {
             int key = instruments[i];
 
             for (int j=0;j<16;j++){
-                JCheckBox jc = (JCheckBox) checkBoxList.get(j+(16*i));
+                JCheckBox jc = checkBoxList.get(j+(16*i));
                 if(jc.isSelected()){
                     trackList[j] = key;
                 }
@@ -244,7 +246,7 @@ public class BeatBox {
         @Override
         public void actionPerformed(ActionEvent e) {
             for(int i=0;i<256;i++){
-                JCheckBox jCheckBox = (JCheckBox) (checkBoxList.get(i));
+                JCheckBox jCheckBox = checkBoxList.get(i);
                 jCheckBox.setSelected(false);
             }
             sequencer.stop();
@@ -275,15 +277,10 @@ public class BeatBox {
             boolean[] checkBoxState = new boolean[256];
 
             for (int i=0;i<256;i++) {
-                JCheckBox checkBox = (JCheckBox) (checkBoxList.get(i));
+                JCheckBox checkBox = checkBoxList.get(i);
 
-                if (checkBox.isSelected()) {
-                    checkBoxState[i] = true;
-                } else {
-                    checkBoxState[i] = false;
-                }
+                checkBoxState[i] = checkBox.isSelected();
             }
-            String messageToSend = null;
             try {
                 out.writeObject(userName + "(" + nextNum++ + ")" + ":" + userMessage.getText());
                 out.writeObject(checkBoxState);
@@ -291,6 +288,20 @@ public class BeatBox {
                 System.out.println("Failed to send message");
             }
             userMessage.setText("");
+        }
+    }
+
+    public class MyRandomListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            for (int i = 0; i < 256; i++) {
+                JCheckBox jc = checkBoxList.get(i);
+
+                int r = (int) (10 * Math.random());
+                jc.setSelected(r < 2);
+            }
+            sequencer.stop();
+            buildTrackAndStart();
         }
     }
 
@@ -319,7 +330,6 @@ public class BeatBox {
 
     public class RemoteReader implements Runnable {
         boolean[] checkBoxState = null;
-        String nameToShow = null;
         Object obj = null;
 
         @Override
@@ -362,7 +372,7 @@ public class BeatBox {
 
     public void changeSequence (boolean[] checkBoxState){
         for(int i=0;i<256;i++){
-            JCheckBox checkBox = (JCheckBox) checkBoxList.get(i);
+            JCheckBox checkBox = checkBoxList.get(i);
             checkBox.setSelected(checkBoxState[i]);
         }
     }
@@ -393,13 +403,9 @@ public class BeatBox {
         boolean[] checkBoxState = new boolean[256];
 
         for (int i=0;i<256;i++) {
-            JCheckBox checkBox = (JCheckBox) (checkBoxList.get(i));
+            JCheckBox checkBox = checkBoxList.get(i);
 
-            if (checkBox.isSelected()) {
-                checkBoxState[i] = true;
-            } else {
-                checkBoxState[i] = false;
-            }
+            checkBoxState[i] = checkBox.isSelected();
         }
 
         try {
@@ -424,11 +430,13 @@ public class BeatBox {
         }
 
         for (int i=0;i<256;i++){
-            JCheckBox jc = (JCheckBox) (checkBoxList.get(i));
+            JCheckBox jc = checkBoxList.get(i);
 
+            assert checkBoxState != null;
             jc.setSelected(checkBoxState[i]);
         }
 
         sequencer.stop();
     }
 }
+
