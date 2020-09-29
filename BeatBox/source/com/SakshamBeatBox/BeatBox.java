@@ -41,7 +41,7 @@ public class BeatBox {
 
     public void startUp(){
         try {
-            Socket sock = new Socket("182.68.190.48", 8080);
+            Socket sock = new Socket("182.64.169.159", 8080);
             out = new ObjectOutputStream(sock.getOutputStream());
             in = new ObjectInputStream(sock.getInputStream());
             Thread remote = new Thread(new RemoteReader());
