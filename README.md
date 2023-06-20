@@ -1,6 +1,6 @@
 # Beat-Box Music
 
-BeatBox-Music is a basic MIDI music player re-creation. This repository contains the complete application file named CyberBeatBoxCSO.jar, along with the source code and related files located in the BeatBox folder.
+BeatBox-Music is a Java application that allows you to create and play MIDI-based music patterns. It provides a graphical interface where you can compose rhythms using a grid of checkboxes representing different musical notes.
 
 ## Prerequisites
 To run this project, you need to have Java installed on your system.
@@ -23,6 +23,13 @@ java -jar CyberBeatBox.jar
 
 ## Usage
  Once you have successfully launched the BeatBox-Music application, you can use it to play MIDI music. Explore the various features provided by the application to customize your music experience.
+
+- Instrument Selection: Choose from a variety of 16 different instruments.
+- Pattern Creation: Create custom musical patterns by turning individual notes on or off in the grid.
+- Tempo Control: Adjust the tempo of the music using the "Tempo Up" and "Tempo Down" buttons.
+- Play and Stop: Start and stop the playback of your music patterns using the "Start" and "Stop" buttons.
+- Random Pattern Generation: Generate random music patterns for experimentation.
+- Save and Load Patterns: Save your created music patterns to a file and load them for playback or editing.
 
 ## Contributing
 Contributions to BeatBox-Music are welcome! If you want to contribute to this project, please follow these steps:
