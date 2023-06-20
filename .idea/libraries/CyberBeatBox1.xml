@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="CyberBeatBox1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/production/BeatBox/CyberBeatBox.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
