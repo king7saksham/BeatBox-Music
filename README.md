@@ -41,4 +41,4 @@ Contributions to BeatBox-Music are welcome! If you want to contribute to this pr
 5. Create a pull request in this repository, describing your changes and their purpose.
 
 ## License
-This project is licensed under the [MIT](https://choosealicense.com/licenses/mit/) License.
+This project is licensed under the [MIT](LICENSE) License.
