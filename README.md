@@ -14,7 +14,7 @@ To get started with BeatBox-Music, follow these steps:
 4. Run the application by double-clicking on the JAR file, or you can run it from the command line using the following command:
 
 ```bash
-java -jar CyberBeatBox.jar
+    java -jar CyberBeatBox.jar
 ```
 
 ## Screenshot
