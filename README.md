@@ -1,6 +1,6 @@
-# Beat-Box Music
+# Cyber BeatBox
 
-BeatBox-Music is a Java application that allows you to create and play MIDI-based music patterns. It provides a graphical interface where you can compose rhythms using a grid of checkboxes representing different musical notes.
+Cyber BeatBox is a Java application that allows you to create and play MIDI-based music patterns. It provides a graphical interface where you can compose rhythms using a grid of checkboxes representing different musical notes.
 
 ## Prerequisites
 To run this project, you need to have Java installed on your system.
